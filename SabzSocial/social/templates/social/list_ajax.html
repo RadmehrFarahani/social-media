@@ -1,0 +1,258 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>پست‌های من • شبکه اجتماعی</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary:     #7c3aed;           /* violet-indigo مدرن */
+      --primary-glow:#c4b5fd;
+      --accent:      #ec4899;
+      --gradient:    linear-gradient(135deg, #7c3aed 0%, #a78bfa 50%, #d946ef 100%);
+      --bg-base:     #0f172a;
+      --bg-overlay:  rgba(15, 23, 42, 0.78);
+      --card-glass:  rgba(30, 41, 59, 0.48);
+      --card-border: rgba(167, 139, 250, 0.25);
+      --text:        #f1f5f9;
+      --text-mute:   #cbd5e1;
+      --radius-xl:   24px;
+      --radius-lg:   18px;
+      --blur-lg:     blur(18px);
+      --blur-md:     blur(10px);
+      --shadow-glow: 0 0 38px rgba(167,139,250,0.28);
+      --shadow-depth:0 18px 52px -12px rgba(124,58,237,0.38);
+      --transition:  all 0.42s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Vazirmatn', system-ui, sans-serif;
+      background: linear-gradient(-50deg, var(--bg-base), #1e293b, #111827, var(--bg-base));
+      background-size: 350% 350%;
+      animation: bgFlow 24s ease infinite;
+      color: var(--text);
+      min-height: 100dvh;
+      padding: 40px 16px;
+      direction: rtl;
+    }
+
+    @keyframes bgFlow {
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .post-container {
+      max-width: 920px;
+      margin: 0 auto;
+      display: grid;
+      gap: 32px;
+    }
+
+    .post-item {
+      background: var(--card-glass);
+      backdrop-filter: var(--blur-lg);
+      -webkit-backdrop-filter: var(--blur-lg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-xl);
+      padding: 30px 34px;
+      box-shadow: var(--shadow-depth);
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+      perspective: 1100px;
+    }
+
+    .post-item:hover {
+      transform: translateY(-12px) rotateX(3deg) rotateY(4deg);
+      box-shadow: var(--shadow-glow), 0 28px 70px -15px rgba(124,58,237,0.45);
+    }
+
+    .post-item::before {
+      content: '';
+      position: absolute;
+      inset: -60%;
+      background: radial-gradient(circle at 20% 30%, rgba(167,139,250,0.18), transparent 65%);
+      opacity: 0;
+      transition: opacity 0.75s ease;
+      pointer-events: none;
+    }
+
+    .post-item:hover::before {
+      opacity: 1;
+    }
+
+    /* Header */
+    .post-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    .author-avatar {
+      width: 62px;
+      height: 62px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid transparent;
+      background: var(--gradient) border-box;
+      padding: 4px;
+      box-shadow: 0 10px 32px rgba(124,58,237,0.35);
+      transition: var(--transition);
+    }
+
+    .post-item:hover .author-avatar {
+      transform: scale(1.16) rotate(5deg);
+    }
+
+    .post-author {
+      font-weight: 700;
+      font-size: 1.26rem;
+      color: var(--text);
+    }
+
+    /* Description */
+    .post-description a {
+      color: var(--text);
+      font-size: 1.1rem;
+      line-height: 1.82;
+      text-decoration: none;
+      display: block;
+      margin-bottom: 20px;
+      transition: color 0.32s;
+    }
+
+    .post-description a:hover {
+      color: var(--primary-glow);
+    }
+
+    /* Date */
+    .post-date {
+      font-size: 0.95rem;
+      color: var(--text-mute);
+      margin-bottom: 18px;
+      font-weight: 500;
+    }
+
+    /* Tags */
+    .post-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .post-tags a {
+      padding: 8px 18px;
+      font-size: 0.92rem;
+      background: rgba(167,139,250,0.14);
+      color: var(--primary-glow);
+      border-radius: 999px;
+      text-decoration: none;
+      border: 1px solid rgba(167,139,250,0.28);
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .post-tags a::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.22), transparent);
+      transform: translateX(-120%);
+      transition: transform 0.65s ease;
+    }
+
+    .post-tags a:hover::before {
+      transform: translateX(120%);
+    }
+
+    .post-tags a:hover {
+      background: var(--primary);
+      color: white;
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(124,58,237,0.4);
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid rgba(167,139,250,0.18);
+      margin: 28px 0 0;
+    }
+
+    .empty-message {
+      text-align: center;
+      color: var(--text-mute);
+      font-size: 1.35rem;
+      font-weight: 500;
+      padding: 120px 24px;
+      background: var(--card-glass);
+      backdrop-filter: var(--blur-md);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--card-border);
+      box-shadow: var(--shadow-depth);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .post-container { gap: 28px; }
+      .post-item { padding: 26px 24px; }
+      .author-avatar { width: 56px; height: 56px; }
+    }
+
+    @media (max-width: 480px) {
+      body { padding: 32px 12px; }
+      .post-description a { font-size: 1.04rem; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="post-container">
+    {% for post in posts %}
+      <div class="post-item">
+
+        <div class="post-header">
+          <img class="author-avatar"
+               src="{% if post.author.profile_photo %}{{ post.author.profile_photo.url }}{% else %}{% static 'images/profile/avatar.jpg' %}{% endif %}"
+               alt="{{ post.author.get_full_name }}">
+          <div class="post-author">{{ post.author.get_full_name }}</div>
+        </div>
+
+        <div class="post-description">
+          <a href="{{ post.get_absolute_url }}">
+            {{ post.description|truncatewords:32|linebreaks }}
+          </a>
+        </div>
+
+        <div class="post-date">منتشر شده در: {{ post.created|date:"j F Y" }}</div>
+
+        <div class="post-tags">
+          {% for post_tag in post.tags.all %}
+            <a href="{% url 'social:post_list_by_tag' post_tag.slug %}">{{ post_tag.name }}</a>
+          {% endfor %}
+        </div>
+
+        <hr>
+
+      </div>
+    {% empty %}
+      <p class="empty-message">هیچ پستی یافت نشد...</p>
+    {% endfor %}
+  </div>
+
+</body>
+</html>

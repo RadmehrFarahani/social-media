@@ -1,0 +1,180 @@
+<style>
+  body {
+    background: #f0f4f8;
+    font-family: 'Vazirmatn', sans-serif;
+    direction: rtl;
+    margin: 0;
+    padding: 0;
+    color: #2c3e50;
+  }
+
+  .edit-form-container {
+    max-width: 500px;
+    background: #ffffff;
+    margin: 50px auto;
+    padding: 40px 35px;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+
+  .edit-form-container:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 25px 45px rgba(0,0,0,0.15);
+  }
+
+  .edit-form-container h2 {
+    margin-bottom: 10px;
+    font-weight: 800;
+    font-size: 28px;
+    text-align: center;
+    color: #1f2a38;
+  }
+
+  .edit-form-container p.description {
+    text-align: center;
+    color: #7f8c8d;
+    margin-bottom: 30px;
+    font-size: 14px;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+  }
+
+  label {
+    font-weight: 600;
+    font-size: 15px;
+    margin-bottom: 6px;
+    color: #34495e;
+  }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="file"],
+  textarea,
+  select {
+    width: 100%;
+    padding: 14px 16px;
+    font-size: 15px;
+    border: 1.5px solid #dfe3e8;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    background: #f9fafc;
+    font-family: inherit;
+    outline: none;
+  }
+
+  input:focus,
+  textarea:focus,
+  select:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 10px rgba(99,102,241,0.25);
+    background: #fff;
+  }
+
+  /* پروفایل پیش نمایش */
+  .profile-preview {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+
+  .profile-preview img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #6366f1;
+    box-shadow: 0 5px 15px rgba(99,102,241,0.3);
+    transition: transform 0.3s;
+  }
+
+  .profile-preview img:hover {
+    transform: scale(1.05);
+  }
+
+  input[type="submit"] {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: white;
+    font-weight: 700;
+    border: none;
+    border-radius: 50px;
+    padding: 15px 0;
+    font-size: 17px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  input[type="submit"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(99,102,241,0.4);
+  }
+
+  .errorlist {
+    color: #e74c3c;
+    margin-top: 5px;
+    font-size: 13px;
+    list-style-type: none;
+    padding: 0;
+  }
+
+  .errorlist li {
+    margin-bottom: 2px;
+  }
+</style>
+{% load static %}
+<div class="edit-form-container">
+  <h2>ویرایش اطلاعات</h2>
+  <p class="description">لطفا اطلاعات موردنیاز را ویرایش کنید</p>
+
+  <!-- پیش‌نمایش عکس -->
+  <div class="profile-preview">
+    <img id="previewImg" src="{% if user.photo %}{{ user.photo.url }}{% else %}{% static 'images/profile/avatar.jpg' %}{% endif %}" alt="پروفایل">
+  </div>
+
+  <form method="post" enctype="multipart/form-data" novalidate>
+    {% csrf_token %}
+    {{ user_form.non_field_errors }}
+
+    {% for field in user_form %}
+      <div class="form-group">
+        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }}
+
+        {% if field.errors %}
+          <ul class="errorlist">
+            {% for error in field.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </div>
+    {% endfor %}
+
+    <input type="submit" value="ثبت ویرایش">
+  </form>
+</div>
+
+<script>
+  // فقط اگر فیلد عکس داریم
+  document.addEventListener('DOMContentLoaded', function() {
+    const fileInput = document.querySelector('input[type="file"]');
+    const previewImg = document.getElementById('previewImg');
+
+    if(fileInput && previewImg){
+      fileInput.addEventListener('change', function(e){
+        const [file] = fileInput.files;
+        if(file) previewImg.src = URL.createObjectURL(file);
+      });
+    }
+  });
+</script>
+

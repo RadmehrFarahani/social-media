@@ -1,0 +1,381 @@
+{% load thumbnail %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>کاربران • شبکه من</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+
+  <style>
+    :root {
+      --primary:     #7c3aed;
+      --primary-glow:#c4b5fd;
+      --accent:      #ec4899;
+      --gradient:    linear-gradient(135deg, #7c3aed 0%, #a78bfa 50%, #d946ef 100%);
+      --bg-base:     #0f172a;
+      --bg-overlay:  rgba(15, 23, 42, 0.78);
+      --card-glass:  rgba(30, 41, 59, 0.48);
+      --card-border: rgba(167, 139, 250, 0.25);
+      --text:        #f1f5f9;
+      --text-mute:   #cbd5e1;
+      --radius-xl:   24px;
+      --blur-lg:     blur(18px);
+      --shadow-glow: 0 0 38px rgba(167,139,250,0.28);
+      --shadow-depth:0 18px 52px -12px rgba(124,58,237,0.38);
+      --transition:  all 0.42s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Vazirmatn', system-ui, sans-serif;
+      background: linear-gradient(-50deg, var(--bg-base), #1e293b, #111827, var(--bg-base));
+      background-size: 350% 350%;
+      animation: bgFlow 24s ease infinite;
+      color: var(--text);
+      min-height: 100dvh;
+      padding: 0 16px 80px;
+      direction: rtl;
+    }
+
+    @keyframes bgFlow {
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    header {
+      position: sticky;
+      top: 12px;
+      z-index: 1000;
+      background: var(--bg-overlay);
+      backdrop-filter: var(--blur-lg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-xl);
+      padding: 16px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: var(--shadow-depth);
+      margin: 20px auto;
+      max-width: 1200px;
+      transition: var(--transition);
+    }
+
+    header:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-glow);
+    }
+
+    .logo {
+      font-size: 2rem;
+      font-weight: 800;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .logo:hover {
+      transform: scale(1.06);
+    }
+
+    nav {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      color: var(--text-mute);
+      font-weight: 600;
+      text-decoration: none;
+      padding: 10px 20px;
+      border-radius: 14px;
+      background: rgba(167,139,250,0.08);
+      border: 1px solid transparent;
+      transition: var(--transition);
+    }
+
+    nav a:hover {
+      background: rgba(167,139,250,0.25);
+      color: white;
+      border-color: var(--primary-glow);
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 12px 32px rgba(167,139,250,0.3);
+    }
+
+    main {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    .users-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 32px;
+    }
+
+    .user-card {
+      background: var(--card-glass);
+      backdrop-filter: var(--blur-lg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-xl);
+      padding: 32px 28px;
+      text-align: center;
+      box-shadow: var(--shadow-depth);
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+      perspective: 1200px;
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeInUp 0.7s forwards;
+    }
+
+    .user-card:nth-child(1) { animation-delay: 0.1s; }
+    .user-card:nth-child(2) { animation-delay: 0.2s; }
+    .user-card:nth-child(3) { animation-delay: 0.3s; }
+    .user-card:nth-child(4) { animation-delay: 0.4s; }
+
+    @keyframes fadeInUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .user-card:hover {
+      transform: translateY(-14px) rotateX(3deg) rotateY(4deg);
+      box-shadow: var(--shadow-glow), 0 30px 80px -20px rgba(124,58,237,0.5);
+    }
+
+    .user-card::before {
+      content: '';
+      position: absolute;
+      inset: -50%;
+      background: radial-gradient(circle at 30% 20%, rgba(167,139,250,0.15), transparent 60%);
+      opacity: 0;
+      transition: opacity 0.8s ease;
+    }
+
+    .user-card:hover::before {
+      opacity: 1;
+    }
+
+    .user-photo {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 5px solid transparent;
+      background: var(--gradient) border-box;
+      padding: 5px;
+      box-shadow: 0 12px 40px rgba(124,58,237,0.4);
+      transition: var(--transition);
+      margin-bottom: 20px;
+    }
+
+    .user-card:hover .user-photo {
+      transform: scale(1.08);
+      box-shadow: 0 0 30px rgba(199,181,253,0.6);
+    }
+
+    .user-name {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 10px;
+      text-decoration: none;
+      display: block;
+      transition: color 0.3s;
+    }
+
+    .user-name:hover {
+      color: var(--primary-glow);
+    }
+
+    .followers-info {
+      font-size: 1rem;
+      color: var(--text-mute);
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .followers-info i {
+      color: var(--primary-glow);
+      font-size: 1.2rem;
+    }
+
+    .follow-btn {
+      background: var(--gradient);
+      border: none;
+      padding: 12px 32px;
+      font-size: 1rem;
+      font-weight: 700;
+      color: white;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(124,58,237,0.4);
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .follow-btn:hover:not(:disabled) {
+      transform: translateY(-4px) scale(1.06);
+      box-shadow: 0 16px 40px rgba(124,58,237,0.55);
+    }
+
+    .follow-btn.unfollow {
+      background: linear-gradient(135deg, #e74c3c, #c0392b);
+    }
+
+    .follow-btn:disabled {
+      background: #475569;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .follow-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      transform: translateX(-100%);
+      transition: transform 0.6s ease;
+    }
+
+    .follow-btn:hover::before {
+      transform: translateX(100%);
+    }
+
+    @media (max-width: 860px) {
+      header { padding: 14px 24px; flex-direction: column; gap: 16px; }
+      nav { justify-content: center; width: 100%; }
+      .users-grid { gap: 28px; }
+    }
+
+    @media (max-width: 520px) {
+      .user-photo { width: 120px; height: 120px; }
+      .user-name { font-size: 1.3rem; }
+      .follow-btn { padding: 10px 28px; font-size: 0.95rem; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <a href="{% url 'social:post_list' %}" class="logo">شبکه من</a>
+    <nav>
+      <a href="{% url 'social:post_list' %}">پست‌ها</a>
+      <a href="{% url 'social:user_list' %}">کاربران</a>
+      <a href="{% url 'social:create_post' %}">ایجاد پست</a>
+      <a href="{% url 'social:ticket' %}">تیکت</a>
+      <a href="{% url 'social:logout' %}">خروج</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="users-grid">
+      {% for user in users %}
+      <div class="user-card" data-userid="{{ user.id }}">
+
+        <a href="{{ user.get_absolute_url }}">
+          {% if user.photo %}
+            <img src="{% thumbnail user.photo 200x200 quality=90 %}" class="user-photo">
+          {% else %}
+            <img src="{% static 'images/profile/avatar.jpg' %}" class="user-photo">
+          {% endif %}
+        </a>
+
+        <a href="{% url 'social:user_detail' user.username %}" class="user-name">
+          {{ user.get_full_name }}
+        </a>
+
+        <div class="followers-info">
+          <i class="fa-solid fa-user-group"></i>
+          {{ user.followers.count }} دنبال‌کننده
+        </div>
+
+        {% if request.user != user %}
+          {% if user.id in followed_users_ids %}
+            <button class="follow-btn unfollow follow-toggle-btn"
+                    data-userid="{{ user.id }}" data-following="yes">
+              عدم دنبال‌کردن
+            </button>
+          {% else %}
+            <button class="follow-btn follow-toggle-btn"
+                    data-userid="{{ user.id }}" data-following="no">
+              دنبال‌کردن
+            </button>
+          {% endif %}
+        {% else %}
+          <button class="follow-btn" disabled>خود شما</button>
+        {% endif %}
+
+      </div>
+      {% empty %}
+        <p class="empty-message" style="grid-column: 1 / -1; text-align:center; padding:120px 20px; color:var(--text-mute); font-size:1.4rem;">
+          هنوز کاربری یافت نشد...
+        </p>
+      {% endfor %}
+    </div>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script>
+    $(document).ready(function(){
+      $('.follow-toggle-btn').click(function(){
+        const btn = $(this);
+        const userId = btn.data('userid');
+
+        btn.prop('disabled', true);
+
+        $.ajax({
+          type: 'POST',
+          url: '{% url "social:user_follow" %}',
+          data: {
+            'id': userId,
+            'csrfmiddlewaretoken': '{{ csrf_token }}'
+          },
+          success: function(data){
+            if(data.follow){
+              btn.text('عدم دنبال‌کردن')
+                 .addClass('unfollow')
+                 .attr('data-following','yes');
+            } else {
+              btn.text('دنبال‌کردن')
+                 .removeClass('unfollow')
+                 .attr('data-following','no');
+            }
+
+            btn.siblings('.followers-info').html(
+              `<i class="fa-solid fa-user-group"></i> ${data.followers_count} دنبال‌کننده`
+            );
+
+            btn.prop('disabled', false);
+          },
+          error: function(){
+            alert("خطا رخ داد!");
+            btn.prop('disabled', false);
+          }
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>

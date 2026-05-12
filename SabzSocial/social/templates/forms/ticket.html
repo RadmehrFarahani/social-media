@@ -1,0 +1,322 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ثبت تیکت • شبکه من</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #6366f1;
+      --primary-dark:#4f46e5;
+      --primary-glow:#a5b4fc;
+      --accent: #c084fc;
+      --gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 40%, #d946ef 80%, #ec4899 100%);
+      --bg-start: #0f172a;
+      --bg-end: #1e293b;
+      --card: rgba(30, 41, 59, 0.68);
+      --card-border: rgba(139, 92, 246, 0.22);
+      --text: #f8fafc;
+      --text-mute: #94a3b8;
+      --radius-lg: 24px;
+      --radius: 18px;
+      --shadow-soft: 0 8px 32px -8px rgba(99,102,241,0.4);
+      --shadow-glow: 0 0 40px rgba(99,102,241,0.25);
+      --blur: blur(16px);
+      --transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      --input-bg: rgba(55, 65, 81, 0.45);
+      --input-border: rgba(167,139,250,0.35);
+    }
+
+    * { margin:0; padding:0; box-sizing:border-box; }
+
+    body {
+      font-family: 'Vazirmatn', system-ui, sans-serif;
+      min-height: 100dvh;
+      color: var(--text);
+      background: linear-gradient(-45deg, var(--bg-start), var(--bg-end), #111827, var(--bg-start));
+      background-size: 300% 300%;
+      animation: gradientBG 18s ease infinite;
+      padding: 0 16px;
+      overflow-x: hidden;
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Navigation ──────────────────────────────── */
+    nav {
+      position: sticky;
+      top: 16px;
+      z-index: 999;
+      background: rgba(15, 23, 42, 0.78);
+      backdrop-filter: var(--blur);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      padding: 14px 28px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      box-shadow: var(--shadow-soft);
+      margin: 20px auto 40px;
+      max-width: 1200px;
+      transition: var(--transition);
+    }
+
+    nav a {
+      color: var(--text-mute);
+      font-weight: 500;
+      text-decoration: none;
+      padding: 10px 20px;
+      border-radius: 14px;
+      background: rgba(99,102,241,0.1);
+      border: 1px solid transparent;
+      transition: var(--transition);
+    }
+
+    nav a:hover {
+      color: white;
+      background: rgba(99,102,241,0.28);
+      border-color: var(--primary-glow);
+      transform: scale(1.08) translateY(-2px);
+      box-shadow: 0 8px 24px rgba(99,102,241,0.35);
+    }
+
+    .form-wrapper {
+      max-width: 620px;
+      margin: 40px auto;
+      padding: 0 16px;
+    }
+
+    form {
+      background: var(--card);
+      backdrop-filter: var(--blur);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      padding: 44px 40px;
+      box-shadow: var(--shadow-soft), var(--shadow-glow);
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+      perspective: 1200px;
+      opacity: 0;
+      transform: translateY(50px);
+      animation: fadeInUp 0.8s forwards 0.3s;
+    }
+
+    @keyframes fadeInUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    form:hover {
+      transform: translateY(-10px) rotateX(2deg) rotateY(2deg);
+      box-shadow: 0 24px 70px -12px rgba(99,102,241,0.5);
+    }
+
+    form label {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 8px;
+      margin-top: 20px;
+      color: var(--text);
+      font-size: 1.08rem;
+    }
+
+    form input[type="text"],
+    form input[type="email"],
+    form input[type="tel"],
+    form textarea,
+    form select {
+      width: 100%;
+      padding: 14px 16px;
+      border: 2px solid var(--input-border);
+      border-radius: 14px;
+      font-size: 1.05rem;
+      background: var(--input-bg);
+      color: var(--text);
+      transition: var(--transition);
+      backdrop-filter: blur(6px);
+    }
+
+    form input:focus,
+    form textarea:focus,
+    form select:focus {
+      border-color: var(--primary-glow);
+      box-shadow: 0 0 0 5px rgba(199,181,253,0.28);
+      outline: none;
+    }
+
+    form textarea {
+      min-height: 140px;
+      resize: vertical;
+    }
+
+    input[type="submit"] {
+      margin-top: 32px;
+      background: var(--gradient);
+      border: none;
+      padding: 16px;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: white;
+      border-radius: 50px;
+      cursor: pointer;
+      width: 100%;
+      box-shadow: 0 12px 36px rgba(99,102,241,0.5);
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    input[type="submit"]:hover {
+      transform: translateY(-6px) scale(1.05);
+      box-shadow: 0 20px 50px rgba(99,102,241,0.65);
+    }
+
+    input[type="submit"]::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+      transform: translateX(-100%);
+      transition: transform 0.7s ease;
+    }
+
+    input[type="submit"]:hover::before {
+      transform: translateX(100%);
+    }
+
+    .errorlist {
+      color: #ff6b6b;
+      font-size: 0.98rem;
+      margin-top: -6px;
+      margin-bottom: 12px;
+      list-style: none;
+      padding: 0;
+    }
+
+    .message {
+      max-width: 620px;
+      margin: 20px auto 0;
+      padding: 16px 24px;
+      border-radius: var(--radius-lg);
+      background: rgba(99,102,241,0.15);
+      color: var(--primary-glow);
+      font-weight: 600;
+      font-size: 1.05rem;
+      border: 1px solid var(--card-border);
+      backdrop-filter: var(--blur);
+      text-align: center;
+    }
+
+    @media (max-width: 640px) {
+      .form-wrapper { padding: 0 12px; }
+      form { padding: 36px 28px; }
+      nav { padding: 12px 20px; gap: 10px; }
+      nav a { padding: 9px 16px; font-size: 0.95rem; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav>
+    <a href="{% url 'social:post_list' %}">پست‌ها</a>
+    <a href="{% url 'social:user_list' %}">کاربران</a>
+    <a href="{% url 'social:create_post' %}">ایجاد پست</a>
+    <a href="{% url 'social:ticket' %}">تیکت</a>
+    <a href="{% url 'social:logout' %}">خروج</a>
+  </nav>
+
+  <div class="form-wrapper">
+
+    {% if messages %}
+      <div class="message">
+        {% for message in messages %}
+          {{ message }}
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <form method="post" novalidate>
+      {% csrf_token %}
+
+      <label for="id_name">نام و نام خانوادگی:</label>
+      <input id="id_name" type="text" name="name" required
+             {% if form.name.value %} value="{{ form.name.value }}"{% endif %} >
+      {% if form.name.errors %}
+        <ul class="errorlist">
+          {% for error in form.name.errors %}
+            <li>{{ error }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+
+      <label for="id_message">متن پیام :</label>
+      <textarea id="id_message" name="message">{% if form.message.value %}{{ form.message.value }}{% endif %}</textarea>
+      {% if form.message.errors %}
+        <ul class="errorlist">
+          {% for error in form.message.errors %}
+            <li>{{ error }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+
+      <label for="id_email">ایمیل :</label>
+      <input id="id_email" type="email" name="email" required
+             {% if form.email.value %} value="{{ form.email.value }}"{% endif %}>
+      {% if form.email.errors %}
+        <ul class="errorlist">
+          {% for error in form.email.errors %}
+            <li>{{ error }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+
+      <label for="id_phone">شماره تماس :</label>
+      <input id="id_phone" type="text" name="phone" required maxlength="11"
+             {% if form.phone.value %} value="{{ form.phone.value }}"{% endif %}>
+      {% if form.phone.errors %}
+        <ul class="errorlist">
+          {% for error in form.phone.errors %}
+            <li>{{ error }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+
+      <label for="id_subject">موضوع پیام :</label>
+      <select id="id_subject" name="subject">
+        <option value="پیشنهاد" {% if form.subject.value == "پیشنهاد" %}selected{% endif %}>پیشنهاد</option>
+        <option value="انتقاد" {% if form.subject.value == "انتقاد" %}selected{% endif %}>انتقاد</option>
+        <option value="گزارش" {% if form.subject.value == "گزارش" %}selected{% endif %}>گزارش مشکل</option>
+      </select>
+      {% if form.subject.errors %}
+        <ul class="errorlist">
+          {% for error in form.subject.errors %}
+            <li>{{ error }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+
+      <input type="submit" value="ثبت تیکت">
+    </form>
+
+    {% if form.non_field_errors %}
+      <ul class="errorlist" style="max-width:620px; margin: 20px auto 0;">
+        {% for error in form.non_field_errors %}
+          <li>{{ error }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+
+  </div>
+
+</body>
+</html>

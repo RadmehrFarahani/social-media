@@ -1,0 +1,403 @@
+{% load thumbnail %}
+{% load static %}
+{% with user=request.user %}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ user.get_full_name }} • پروفایل حرفه‌ای</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary:     #6366f1;
+      --primary-dark:#4f46e5;
+      --primary-glow:#a5b4fc;
+      --accent:      #c084fc;
+      --gradient:    linear-gradient(135deg, #6366f1 0%, #8b5cf6 40%, #d946ef 80%, #ec4899 100%);
+      --bg-start:    #0f172a;
+      --bg-end:      #1e293b;
+      --card:        rgba(30, 41, 59, 0.68);
+      --card-border: rgba(139, 92, 246, 0.22);
+      --text:        #f8fafc;
+      --text-mute:   #94a3b8;
+      --radius-lg:   24px;
+      --radius:      18px;
+      --shadow-soft: 0 8px 32px -8px rgba(99,102,241,0.4);
+      --shadow-glow: 0 0 40px rgba(99,102,241,0.25);
+      --blur:        blur(16px);
+      --transition:  all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    * { margin:0; padding:0; box-sizing:border-box; }
+
+    body {
+      font-family: 'Vazirmatn', system-ui, sans-serif;
+      min-height: 100dvh;
+      color: var(--text);
+      background: linear-gradient(-45deg, var(--bg-start), var(--bg-end), #111827, var(--bg-start));
+      background-size: 300% 300%;
+      animation: gradientBG 18s ease infinite;
+      padding: 28px 16px;
+      overflow-x: hidden;
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Navigation ──────────────────────────────── */
+    nav {
+      position: sticky;
+      top: 16px;
+      z-index: 999;
+      background: rgba(15, 23, 42, 0.78);
+      backdrop-filter: var(--blur);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      padding: 14px 28px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      box-shadow: var(--shadow-soft);
+      margin: 0 auto 40px;
+      max-width: 1200px;
+      transition: var(--transition);
+    }
+
+    nav a {
+      color: var(--text-mute);
+      font-weight: 500;
+      text-decoration: none;
+      padding: 10px 20px;
+      border-radius: 14px;
+      background: rgba(99,102,241,0.1);
+      border: 1px solid transparent;
+      transition: var(--transition);
+    }
+
+    nav a:hover {
+      color: white;
+      background: rgba(99,102,241,0.28);
+      border-color: var(--primary-glow);
+      transform: scale(1.08) translateY(-2px);
+      box-shadow: 0 8px 24px rgba(99,102,241,0.35);
+    }
+
+    /* Container */
+    .container {
+      max-width: 1180px;
+      margin: 0 auto;
+      display: grid;
+      gap: 32px;
+    }
+
+    /* Profile Hero Card */
+    .profile-hero {
+      background: var(--card);
+      backdrop-filter: var(--blur);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      padding: 48px 40px;
+      box-shadow: var(--shadow-soft), var(--shadow-glow);
+      display: flex;
+      align-items: center;
+      gap: 48px;
+      position: relative;
+      overflow: hidden;
+      transition: var(--transition);
+    }
+
+    .profile-hero:hover {
+      transform: translateY(-8px) scale(1.008);
+      box-shadow: 0 24px 60px -12px rgba(99,102,241,0.5);
+    }
+
+    .avatar-container {
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .avatar-container img {
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 6px solid transparent;
+      background: var(--gradient);
+      background-origin: border-box;
+      padding: 5px;
+      box-shadow: 0 16px 48px rgba(99,102,241,0.45);
+      transition: var(--transition);
+    }
+
+    .avatar-container:hover img {
+      transform: scale(1.08) rotate(3deg);
+    }
+
+    .avatar-glow {
+      position: absolute;
+      inset: -20px;
+      background: var(--gradient);
+      filter: blur(40px);
+      opacity: 0.5;
+      z-index: -1;
+      border-radius: 50%;
+      animation: pulseGlow 6s ease-in-out infinite;
+    }
+
+    @keyframes pulseGlow {
+      0%,100% { opacity: 0.45; transform: scale(1); }
+      50%     { opacity: 0.7;  transform: scale(1.15); }
+    }
+
+    .profile-details h1 {
+      font-size: 2.6rem;
+      font-weight: 800;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 12px;
+      line-height: 1.1;
+    }
+
+    .stats {
+      display: flex;
+      gap: 52px;
+      margin-top: 20px;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat .count {
+      font-size: 2.8rem;
+      font-weight: 800;
+      color: var(--primary-glow);
+      display: inline-block;
+      animation: countUp 2.2s ease-out forwards;
+    }
+
+    @keyframes countUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to   { transform: translateY(0); opacity: 1; }
+    }
+
+    .stat .label {
+      font-size: 1rem;
+      color: var(--text-mute);
+      margin-top: 6px;
+    }
+
+    /* Sections */
+    .section {
+      background: var(--card);
+      backdrop-filter: var(--blur);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      padding: 36px 40px;
+      box-shadow: var(--shadow-soft);
+      transition: var(--transition);
+    }
+
+    .section:hover {
+      transform: translateY(-6px);
+    }
+
+    .section h2 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--primary-glow);
+      margin-bottom: 24px;
+      position: relative;
+      display: inline-block;
+    }
+
+    .section h2::after {
+      content: '';
+      position: absolute;
+      bottom: -10px; right: 0;
+      width: 55%;
+      height: 4px;
+      background: var(--gradient);
+      border-radius: 4px;
+      opacity: 0.7;
+    }
+
+    /* Features */
+    .feature-link {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px 24px;
+      color: var(--text);
+      text-decoration: none;
+      border-radius: var(--radius);
+      font-weight: 500;
+      margin-bottom: 12px;
+      background: rgba(99,102,241,0.08);
+      border: 1px solid rgba(99,102,241,0.15);
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-link::before {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 0; height: 0;
+      background: rgba(255,255,255,0.12);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: width 0.6s ease, height 0.6s ease;
+    }
+
+    .feature-link:hover::before {
+      width: 300px; height: 300px;
+    }
+
+    .feature-link:hover {
+      background: rgba(99,102,241,0.22);
+      color: white;
+      transform: translateX(-8px);
+      box-shadow: 0 12px 32px rgba(99,102,241,0.3);
+    }
+
+    /* Posts */
+    .post-card {
+      padding: 22px 0;
+      border-bottom: 1px solid rgba(139,92,246,0.12);
+      transition: var(--transition);
+      perspective: 1000px;
+    }
+
+    .post-card:last-child { border-bottom: none; }
+
+    .post-card-inner {
+      transition: transform 0.55s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      transform-style: preserve-3d;
+      position: relative;
+    }
+
+    .post-card:hover .post-card-inner {
+      transform: rotateY(8deg) translateZ(20px);
+    }
+
+    .post-link {
+      color: var(--text);
+      font-weight: 600;
+      font-size: 1.18rem;
+      text-decoration: none;
+      line-height: 1.5;
+      display: block;
+      transition: color 0.3s;
+    }
+
+    .post-link:hover {
+      color: var(--primary-glow);
+    }
+
+    .post-meta {
+      margin-top: 10px;
+      font-size: 0.94rem;
+      color: var(--text-mute);
+    }
+
+    .empty {
+      text-align: center;
+      padding: 80px 20px;
+      color: var(--text-mute);
+      font-size: 1.2rem;
+      font-weight: 500;
+      opacity: 0.8;
+    }
+
+    /* Responsive ──────────────────────────────── */
+    @media (max-width: 920px) {
+      .profile-hero { flex-direction: column; text-align: center; padding: 40px 28px; }
+      .stats { gap: 60px; justify-content: center; }
+      .avatar-container img { width: 160px; height: 160px; }
+    }
+
+    @media (max-width: 580px) {
+      nav { padding: 12px 18px; gap: 10px; }
+      nav a { padding: 9px 16px; font-size: 0.95rem; }
+      .profile-hero { padding: 32px 20px; }
+      .profile-hero h1 { font-size: 2.1rem; }
+      .stat .count { font-size: 2.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="{% url 'social:post_list' %}">پست‌ها</a>
+    <a href="{% url 'social:user_list' %}">کاربران</a>
+    <a href="{% url 'social:ticket' %}">تیکت</a>
+    <a href="{% url 'social:login' %}">ورود</a>
+    <a href="{% url 'social:logout' %}">خروج</a>
+  </nav>
+
+  <div class="container">
+
+    <section class="profile-hero">
+      <div class="avatar-container">
+        <div class="avatar-glow"></div>
+        {% if user.photo %}
+          <img src="{% thumbnail user.photo 280x280 crop quality=95 %}" alt="{{ user.get_full_name }}">
+        {% else %}
+          <img src="{% static 'images/profile/avatar.jpg' %}" alt="آواتار">
+        {% endif %}
+      </div>
+
+      <div class="profile-details">
+        <h1>{{ user.get_full_name }}</h1>
+
+        <div class="stats">
+          <div class="stat">
+            <div class="count">{{ user.followers.count }}</div>
+            <div class="label">فالوئر</div>
+          </div>
+          <div class="stat">
+            <div class="count">{{ user.following.count }}</div>
+            <div class="label">فالووینگ</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>قابلیت‌های سریع</h2>
+      <a href="{% url 'social:create_post' %}" class="feature-link">➤ ایجاد پست جدید</a>
+      <a href="{% url 'social:edit_user' %}" class="feature-link">➤ ویرایش پروفایل من</a>
+    </section>
+
+    <section class="section">
+      <h2>پست‌های اخیر</h2>
+
+      {% for post in posts %}
+        <div class="post-card">
+          <div class="post-card-inner">
+            <a href="{{ post.get_absolute_url }}" class="post-link">
+              {{ post.description|truncatewords:24|linebreaks }}
+            </a>
+            <div class="post-meta">منتشر شده در {{ post.created|date:"j F Y • H:i" }}</div>
+          </div>
+        </div>
+      {% empty %}
+        <div class="empty">هنوز هیچ پستی منتشر نکرده‌اید...</div>
+      {% endfor %}
+    </section>
+
+  </div>
+
+</body>
+</html>
+{% endwith %}
